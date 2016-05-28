@@ -1,0 +1,6 @@
+{
+  "require": {
+    "phalcon/devtools": "^2.0",
+    "aws/aws-sdk-php": "2.7.*"
+  }
+}
