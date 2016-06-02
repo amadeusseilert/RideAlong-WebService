@@ -52,44 +52,36 @@ $app->get('/api/locations', function () use ($client) {
 // Searches rides
 $app->get('/api/search/ride/{ride}', function ($ride) use ($client) {
 
-    $data = explode(".",$ride);
-    $origin = $data[0];
-    $destination = $data[1];
+    parse_str($ride, $data);
     $response = new Response();
-
-    try {
-        $result = $client->scan([
-            'TableName' => 'Rides',
-            'Origin' => $origin,
-            'Destination' => $destination
-        ]);
-
-        $response->setStatusCode(200, "OK");
-        $response->setContent(json_encode($result->get ( 'Items' )));
-        return $response;
-    } catch (DynamoDbException $e){
-        $response->setStatusCode(400, "Bad Request");
-        $response->setContent($e->getMessage());
-        return $response;
-    }
-});
-
-// Searches rides
-$app->get('/api/search/ride', function () use ($client) {
-    $response = new Response();
-    try {
-        $result = $client->scan([
-            'TableName' => 'Rides',
-        ]);
-
-        $response->setStatusCode(200, "OK");
-        $response->setContent(json_encode($result->get ( 'Items' )));
-        return $response;
-    } catch (DynamoDbException $e){
-        $response->setStatusCode(400, "Bad Request");
-        $response->setContent($e->getMessage());
-        return $response;
-    }
+    echo $ride;
+    $origin = null;
+    $destination = null;
+    $date = null;
+    $time = null;
+//    try {
+//        $origin = $data['origin'];
+//        $destination = $data['destination'];
+//        $date = $data['date'];
+//        $time = $data['time'];
+//        $result = $client->query([
+//            'TableName' => 'Rides',
+//            'ConsistentRead' => true,
+//            'ProjectionExpression' => ''
+//            'Origin' => $origin,
+//            'Destination' => $destination,
+//            'Date' => $date,
+//            'Time' => $time
+//        ]);
+//
+//        $response->setStatusCode(200, "OK");
+//        $response->setContent(json_encode($result->get ( 'Items' )));
+//        return $response;
+//    } catch (DynamoDbException $e){
+//        $response->setStatusCode(400, "Bad Request");
+//        $response->setContent($e->getMessage());
+//        return $response;
+//    }
 });
 
 // Adds a new ride
@@ -105,15 +97,20 @@ $app->post('/api/add/ride', function () use ($client, $app){
                 'RidesId' => ['S' => uniqid()], // Primary Key
                 'Date' => ['S' => $data->date],
                 'Time' => ['S' => $data->time],
-                'Driver' => ['N' => $data->driver],
+                'Driver' => ['S' => $data->driver],
                 'Slots' => ['N' => $data->slots],
                 'Origin' => ['S' => $data->origin],
-                'Destination' => ['S' => $data->dest]
+                'Destination' => ['S' => $data->destination]
             ]
         ]);
-        echo $result;
+
+        $response->setStatusCode(200, "OK");
+        $response->setContent("");
+        return $response;
     } catch (DynamoDbException $e){
-        echo $e->getMessage();
+        $response->setStatusCode(400, "Bad Request");
+        $response->setContent($e->getMessage());
+        return $response;
     }
 
 });
