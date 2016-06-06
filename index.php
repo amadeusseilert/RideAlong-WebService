@@ -210,9 +210,7 @@ $app->delete('/api/delete/ride/{context}/{id}', function ($context, $id) use ($c
     }
 });
 
-$app->put('/api/reserve/ride/{context}/{id}', function ($context, $id) use ($client, $app){
-
-    $data = $app->request->getJsonRawBody();
+$app->delete('/api/reserve/ride/{context}/{id}', function ($context, $id) use ($client){
 
     $response = new Response();
     try {
@@ -222,8 +220,12 @@ $app->put('/api/reserve/ride/{context}/{id}', function ($context, $id) use ($cli
                 'RideAlong_RideContext' => ['S' => $context],
                 'RideAlong_RideID' => ['S' => $id]
             ],
+            'ConditionExpression' => 'RideAlong_RideSlots > :cond',
             'UpdateExpression' => 'set RideAlong_RideSlots = RideAlong_RideSlots - :val',
-            'ExpressionAttributeValues' => [':val' => ['N' => $data->slots]]
+            'ExpressionAttributeValues' => [
+                ':val' => ['N' => 1],
+                ':cond' => ['N' => 0]
+            ]
         ]);
 
         $response->setStatusCode(200, "OK");

@@ -28,8 +28,8 @@
       <file leaf-file-name="index.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="535">
-              <caret line="131" column="16" selection-start-line="131" selection-start-column="16" selection-end-line="131" selection-end-column="16" />
+            <state relative-caret-position="1793">
+              <caret line="212" column="86" selection-start-line="212" selection-start-column="86" selection-end-line="212" selection-end-column="86" />
               <folding>
                 <element signature="e#6#97#0#PHP" expanded="true" />
                 <element signature="e#136#168#0#PHP" expanded="true" />
@@ -231,7 +231,7 @@
       <workItem from="1464900194842" duration="6073000" />
       <workItem from="1464996624706" duration="9000" />
       <workItem from="1465142105303" duration="21071000" />
-      <workItem from="1465245955244" duration="4627000" />
+      <workItem from="1465245955244" duration="6193000" />
     </task>
     <task id="LOCAL-00001" summary="Amadeus 01">
       <created>1464908469579</created>
@@ -275,11 +275,18 @@
       <option name="project" value="LOCAL" />
       <updated>1465251658424</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="- opção de buscar caronas sem especificar a hora">
+      <created>1465252454298</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1465252454298</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47795000" />
+    <option name="totallyTimeSpent" value="49361000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -321,7 +328,8 @@
     <MESSAGE value="Amadeus 01" />
     <MESSAGE value="WS finalizado" />
     <MESSAGE value="WS:&#10;- adição de put e delete" />
-    <option name="LAST_COMMIT_MESSAGE" value="WS:&#10;- adição de put e delete" />
+    <MESSAGE value="- opção de buscar caronas sem especificar a hora" />
+    <option name="LAST_COMMIT_MESSAGE" value="- opção de buscar caronas sem especificar a hora" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -621,8 +629,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="535">
-          <caret line="131" column="16" selection-start-line="131" selection-start-column="16" selection-end-line="131" selection-end-column="16" />
+        <state relative-caret-position="1793">
+          <caret line="212" column="86" selection-start-line="212" selection-start-column="86" selection-end-line="212" selection-end-column="86" />
           <folding>
             <element signature="e#6#97#0#PHP" expanded="true" />
             <element signature="e#136#168#0#PHP" expanded="true" />
