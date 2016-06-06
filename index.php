@@ -113,6 +113,47 @@ $app->get('/api/search/ride/{origin}/{destination}/{date}/{time}', function ($or
     }
 });
 
+$app->get('/api/search/ride/{origin}/{destination}/{date}', function ($origin, $destination, $date) use ($client) {
+
+    $response = new Response();
+
+    $date = str_replace("-", "/", $date);
+
+    try {
+
+        $result = $client->scan([
+            'TableName' => 'RideAlong_Rides',
+            'ConsistentRead' => true,
+            'Limit' => 20,
+            'FilterExpression' =>
+                'RideAlong_RideContext = :context_val AND
+                RideAlong_RideDate = :date_val AND
+                RideAlong_RideDestination = :destination_val AND
+                RideAlong_RideOrigin = :origin_val',
+            'ExpressionAttributeValues' =>  [
+                ':context_val' => ['S' => 'UNIFESP'],
+                ':origin_val' => ['S' => $origin],
+                ':destination_val' => ['S' => $destination],
+                ':date_val' => ['S' => $date],
+            ]
+        ]);
+
+        $result = $result->get('Items');
+
+        foreach ($result as $item => $value){
+            $result[$item]['RideAlong_RideTime']['N'] = convert_time($value['RideAlong_RideTime']['N']);
+        }
+
+        $response->setStatusCode(200, "OK");
+        $response->setContent(json_encode($result));
+        return $response;
+    } catch (DynamoDbException $e){
+        $response->setStatusCode(400, "Bad Request");
+        $response->setContent($e->getMessage());
+        return $response;
+    }
+});
+
 // Adds a new ride
 $app->post('/api/add/ride', function () use ($client, $app){
 
