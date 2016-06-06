@@ -39,11 +39,7 @@ function convert_time($time) {
 try {
     $client = DynamoDbClient::factory(array(
         'region' => 'sa-east-1',
-        'version' => 'latest',
-        'credentials' => array(
-            'key'    => 'YOUR_AWS_ACCESS_KEY_ID',
-            'secret' => 'YOUR_AWS_SECRET_ACCESS_KEY',
-        )
+        'version' => 'latest'
     ));
 } catch (DynamoDbException $e){
     echo $e->getMessage();
