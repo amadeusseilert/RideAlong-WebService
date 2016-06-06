@@ -81,19 +81,21 @@ $app->get('/api/search/ride/{origin}/{destination}/{date}/{time}', function ($or
             'ConsistentRead' => true,
             'Limit' => 20,
             'FilterExpression' =>
-                                        'RideAlong_RideContext = :context_val AND
-                                        RideAlong_RideDate = :date_val AND
-                                        RideAlong_RideTime >= :time_start_val AND
-                                        RideAlong_RideTime <= :time_end_val AND
-                                        RideAlong_RideDestination = :destination_val AND
-                                        RideAlong_RideOrigin = :origin_val',
+                'RideAlong_RideContext = :context_val AND
+                RideAlong_RideDate = :date_val AND
+                RideAlong_RideTime >= :time_start_val AND
+                RideAlong_RideTime <= :time_end_val AND
+                RideAlong_RideDestination = :destination_val AND
+                RideAlong_RideOrigin = :origin_val AND
+                RideAlong_RideSlots > :val',
             'ExpressionAttributeValues' =>  [
-                                                ':context_val' => ['S' => 'UNIFESP'],
-                                                ':origin_val' => ['S' => $origin],
-                                                ':destination_val' => ['S' => $destination],
-                                                ':date_val' => ['S' => $date],
-                                                ':time_start_val' => ['N' => ($time - 100)],
-                                                ':time_end_val' => ['N' => ($time + 100)]
+                ':context_val' => ['S' => 'UNIFESP'],
+                ':origin_val' => ['S' => $origin],
+                ':destination_val' => ['S' => $destination],
+                ':date_val' => ['S' => $date],
+                ':time_start_val' => ['N' => ($time - 100)],
+                ':time_end_val' => ['N' => ($time + 100)],
+                ':val' => ['N' => 0]
                                             ]
         ]);
 
@@ -129,12 +131,15 @@ $app->get('/api/search/ride/{origin}/{destination}/{date}', function ($origin, $
                 'RideAlong_RideContext = :context_val AND
                 RideAlong_RideDate = :date_val AND
                 RideAlong_RideDestination = :destination_val AND
-                RideAlong_RideOrigin = :origin_val',
+                RideAlong_RideOrigin = :origin_val AND
+                RideAlong_RideSlots > :val',
+
             'ExpressionAttributeValues' =>  [
                 ':context_val' => ['S' => 'UNIFESP'],
                 ':origin_val' => ['S' => $origin],
                 ':destination_val' => ['S' => $destination],
                 ':date_val' => ['S' => $date],
+                ':val' => ['N' => 0]
             ]
         ]);
 
