@@ -8,6 +8,7 @@
 
 require_once 'vendor\autoload.php';
 
+use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Exception\DynamoDbException;
 use Phalcon\Mvc\Micro;
 use Phalcon\Http\Response;
@@ -36,12 +37,12 @@ function convert_time($time) {
 }
 
 try {
-    $client = \Aws\DynamoDb\DynamoDbClient::factory(array(
+    $client = DynamoDbClient::factory(array(
         'region' => 'sa-east-1',
         'version' => 'latest',
         'credentials' => array(
-            'key' => 'AKIAIQO3IGZF3TUAFR6Q',
-            'secret' => '9nVufC0bGAo2p2ukqICd/RSaX6WUbpW11HTFHwxw'
+            'key'    => 'YOUR_AWS_ACCESS_KEY_ID',
+            'secret' => 'YOUR_AWS_SECRET_ACCESS_KEY',
         )
     ));
 } catch (DynamoDbException $e){
@@ -82,7 +83,6 @@ $app->get('/api/search/ride/{origin}/{destination}/{date}/{time}', function ($or
         $result = $client->scan([
             'TableName' => 'RideAlong_Rides',
             'ConsistentRead' => true,
-            'ProjectionExpression' => 'RideAlong_RideTime, RideAlong_RideDate, RideAlong_RideDriver, RideAlong_RideSlots, RideAlong_RideOrigin, RideAlong_RideDestination',
             'Limit' => 20,
             'FilterExpression' =>
                                         'RideAlong_RideContext = :context_val AND
@@ -152,5 +152,51 @@ $app->post('/api/add/ride', function () use ($client, $app){
 
 });
 
+$app->delete('/api/delete/ride/{context}/{id}', function ($context, $id) use ($client){
+
+    $response = new Response();
+    try {
+        $result = $client->deleteItem([
+            'TableName' => 'RideAlong_Rides',
+            'Key' => [
+                'RideAlong_RideContext' => ['S' => $context],
+                'RideAlong_RideID' => ['S' => $id]
+            ]
+        ]);
+        $response->setStatusCode(200, "OK");
+        $response->setContent("");
+        return $response;
+    } catch (DynamoDbException $e){
+        $response->setStatusCode(400, "Bad Request");
+        $response->setContent($e->getMessage());
+        return $response;
+    }
+});
+
+$app->put('/api/reserve/ride/{context}/{id}', function ($context, $id) use ($client, $app){
+
+    $data = $app->request->getJsonRawBody();
+
+    $response = new Response();
+    try {
+        $result = $client->updateItem([
+            'TableName' => 'RideAlong_Rides',
+            'Key' => [
+                'RideAlong_RideContext' => ['S' => $context],
+                'RideAlong_RideID' => ['S' => $id]
+            ],
+            'UpdateExpression' => 'set RideAlong_RideSlots = RideAlong_RideSlots - :val',
+            'ExpressionAttributeValues' => [':val' => ['N' => $data->slots]]
+        ]);
+
+        $response->setStatusCode(200, "OK");
+        $response->setContent("");
+        return $response;
+    } catch (DynamoDbException $e){
+        $response->setStatusCode(400, "Bad Request");
+        $response->setContent($e->getMessage());
+        return $response;
+    }
+});
 
 $app->handle();
