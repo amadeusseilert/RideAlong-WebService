@@ -55,13 +55,25 @@ $app->get('/api/locations', function () use ($client) {
         $result = $client->scan([
             'TableName' => 'RideAlong_RideLocations'
         ]);
+
+        $result = $result->get ( 'Items' );
+
+        $data = array();
+
+        foreach ($result as $item){
+            $temp = array(
+                'id' => $item['RideAlong_RideLocationsID']['N'],
+                'name' => $item['RideAlong_RideLocationsName']['S'],
+            );
+            array_push($data, $temp);
+        }
         $response->setStatusCode(200, "OK");
-        $response->setContent(json_encode($result->get ( 'Items' )));
+        $response->setContent(json_encode($data));
         return $response;
 
     } catch (DynamoDbException $e) {
         $response->setStatusCode(400, "Bad Request");
-        $response->setContent($e->getMessage());
+        $response->setContent('');
         return $response;
     }
 });
@@ -105,12 +117,28 @@ $app->get('/api/search/ride/{origin}/{destination}/{date}/{time}', function ($or
             $result[$item]['RideAlong_RideTime']['N'] = convert_time($value['RideAlong_RideTime']['N']);
         }
 
+        $data = array();
+
+        foreach ($result as $item){
+            $temp = array(
+                'context' => $item['RideAlong_RideContext']['S'],
+                'id' => $item['RideAlong_RideID']['S'],
+                'driver' => $item['RideAlong_RideDriver']['S'],
+                'date' => $item['RideAlong_RideDate']['S'],
+                'time' => $item['RideAlong_RideTime']['N'],
+                'destination' => $item['RideAlong_RideDestination']['S'],
+                'origin' => $item['RideAlong_RideOrigin']['S'],
+                'slots' => $item['RideAlong_RideSlots']['N']
+            );
+            array_push($data, $temp);
+        }
+
         $response->setStatusCode(200, "OK");
-        $response->setContent(json_encode($result));
+        $response->setContent(json_encode($data));
         return $response;
     } catch (DynamoDbException $e){
         $response->setStatusCode(400, "Bad Request");
-        $response->setContent($e->getMessage());
+        $response->setContent('');
         return $response;
     }
 });
@@ -149,12 +177,28 @@ $app->get('/api/search/ride/{origin}/{destination}/{date}', function ($origin, $
             $result[$item]['RideAlong_RideTime']['N'] = convert_time($value['RideAlong_RideTime']['N']);
         }
 
+        $data = array();
+
+        foreach ($result as $item){
+            $temp = array(
+                'context' => $item['RideAlong_RideContext']['S'],
+                'id' => $item['RideAlong_RideID']['S'],
+                'driver' => $item['RideAlong_RideDriver']['S'],
+                'date' => $item['RideAlong_RideDate']['S'],
+                'time' => $item['RideAlong_RideTime']['N'],
+                'destination' => $item['RideAlong_RideDestination']['S'],
+                'origin' => $item['RideAlong_RideOrigin']['S'],
+                'slots' => $item['RideAlong_RideSlots']['N']
+            );
+            array_push($data, $temp);
+        }
+
         $response->setStatusCode(200, "OK");
-        $response->setContent(json_encode($result));
+        $response->setContent(json_encode($data));
         return $response;
     } catch (DynamoDbException $e){
         $response->setStatusCode(400, "Bad Request");
-        $response->setContent($e->getMessage());
+        $response->setContent('');
         return $response;
     }
 });
@@ -188,7 +232,7 @@ $app->post('/api/add/ride', function () use ($client, $app){
         return $response;
     } catch (DynamoDbException $e){
         $response->setStatusCode(400, "Bad Request");
-        $response->setContent($e->getMessage());
+        $response->setContent('');
         return $response;
     }
 
@@ -210,7 +254,7 @@ $app->delete('/api/delete/ride/{context}/{id}', function ($context, $id) use ($c
         return $response;
     } catch (DynamoDbException $e){
         $response->setStatusCode(400, "Bad Request");
-        $response->setContent($e->getMessage());
+        $response->setContent('');
         return $response;
     }
 });
@@ -238,7 +282,7 @@ $app->delete('/api/reserve/ride/{context}/{id}', function ($context, $id) use ($
         return $response;
     } catch (DynamoDbException $e){
         $response->setStatusCode(400, "Bad Request");
-        $response->setContent($e->getMessage());
+        $response->setContent('');
         return $response;
     }
 });
