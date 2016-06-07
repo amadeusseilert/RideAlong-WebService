@@ -62,7 +62,7 @@ $app->get('/api/locations', function () use ($client) {
 
         foreach ($result as $item){
             $temp = array(
-                'id' => $item['RideAlong_RideLocationsID']['N'],
+                'id' => $item['RideAlong_RideLocationsID']['S'],
                 'name' => $item['RideAlong_RideLocationsName']['S'],
             );
             array_push($data, $temp);
