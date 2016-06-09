@@ -50,7 +50,7 @@ $app->get('/api/locations', function () use ($client) {
 
     $result = null;
     $response = new Response();
-
+    $response->setContentType('application/json');
     try {
         $result = $client->scan([
             'TableName' => 'RideAlong_RideLocations'
@@ -67,6 +67,7 @@ $app->get('/api/locations', function () use ($client) {
             );
             array_push($data, $temp);
         }
+
         $response->setStatusCode(200, "OK");
         $response->setContent(json_encode($data));
         return $response;
@@ -82,7 +83,7 @@ $app->get('/api/locations', function () use ($client) {
 $app->get('/api/search/ride/{origin}/{destination}/{date}/{time}', function ($origin, $destination, $date, $time) use ($client) {
 
     $response = new Response();
-
+    $response->setContentType('application/json');
     $date = str_replace("-", "/", $date);
     $time = intval(str_replace(":", "", $time));
 
@@ -146,7 +147,7 @@ $app->get('/api/search/ride/{origin}/{destination}/{date}/{time}', function ($or
 $app->get('/api/search/ride/{origin}/{destination}/{date}', function ($origin, $destination, $date) use ($client) {
 
     $response = new Response();
-
+    $response->setContentType('application/json');
     $date = str_replace("-", "/", $date);
 
     try {
@@ -209,16 +210,16 @@ $app->post('/api/add/ride', function () use ($client, $app){
     $data = $app->request->getJsonRawBody();
 
     $response = new Response();
-
+    $response->setContentType('application/json');
     $data->time = intval(str_replace(":", "", $data->time));
 
     try {
-        $id = uniqid();
+        $new_id = uniqid();
         $result = $client->putItem([
             'TableName' => 'RideAlong_Rides',
             'Item' => [
                 'RideAlong_RideContext' => ['S' => 'UNIFESP'], // Primary Context Key
-                'RideAlong_RideID' => ['S' => $id],
+                'RideAlong_RideID' => ['S' => $new_id],
                 'RideAlong_RideTime' => ['N' => $data->time],
                 'RideAlong_RideDate' => ['S' => $data->date],
                 'RideAlong_RideDriver' => ['S' => $data->driver],
@@ -228,8 +229,10 @@ $app->post('/api/add/ride', function () use ($client, $app){
             ]
         ]);
 
-        $response->setStatusCode(200, "OK");
-        $response->setContent($id);
+        $content = array('id' => $new_id);
+
+        $response->setStatusCode(201, "Created");
+        $response->setContent(json_encode($content));
         return $response;
     } catch (DynamoDbException $e){
         $response->setStatusCode(400, "Bad Request");
@@ -242,6 +245,7 @@ $app->post('/api/add/ride', function () use ($client, $app){
 $app->delete('/api/delete/ride/{context}/{id}', function ($context, $id) use ($client){
 
     $response = new Response();
+    $response->setContentType('application/json');
     try {
         $result = $client->deleteItem([
             'TableName' => 'RideAlong_Rides',
@@ -250,6 +254,7 @@ $app->delete('/api/delete/ride/{context}/{id}', function ($context, $id) use ($c
                 'RideAlong_RideID' => ['S' => $id]
             ]
         ]);
+
         $response->setStatusCode(200, "OK");
         $response->setContent("");
         return $response;
@@ -263,6 +268,7 @@ $app->delete('/api/delete/ride/{context}/{id}', function ($context, $id) use ($c
 $app->delete('/api/reserve/ride/{context}/{id}', function ($context, $id) use ($client){
 
     $response = new Response();
+    $response->setContentType('application/json');
     try {
         $result = $client->updateItem([
             'TableName' => 'RideAlong_Rides',
