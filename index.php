@@ -213,11 +213,12 @@ $app->post('/api/add/ride', function () use ($client, $app){
     $data->time = intval(str_replace(":", "", $data->time));
 
     try {
+        $id = uniqid();
         $result = $client->putItem([
             'TableName' => 'RideAlong_Rides',
             'Item' => [
                 'RideAlong_RideContext' => ['S' => 'UNIFESP'], // Primary Context Key
-                'RideAlong_RideID' => ['S' => uniqid()],
+                'RideAlong_RideID' => ['S' => $id],
                 'RideAlong_RideTime' => ['N' => $data->time],
                 'RideAlong_RideDate' => ['S' => $data->date],
                 'RideAlong_RideDriver' => ['S' => $data->driver],
@@ -228,7 +229,7 @@ $app->post('/api/add/ride', function () use ($client, $app){
         ]);
 
         $response->setStatusCode(200, "OK");
-        $response->setContent("");
+        $response->setContent($id);
         return $response;
     } catch (DynamoDbException $e){
         $response->setStatusCode(400, "Bad Request");
